@@ -1,7 +1,7 @@
 'use client'
 
 import type { SiteSettings } from '@/lib/types'
-import { AnimatePresence, motion, useScroll, useMotionValue } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useMotionValue, useTransform } from 'framer-motion'
 import { Menu, ShieldCheck, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -22,6 +22,10 @@ export function Navbar({ settings = { name: '', initials: '' } }: { settings?: {
   const scrollYProgress = useMotionValue(0)
   useScroll().scrollY.on('change', (v) => scrollYProgress.set(Math.min(v / 100, 1)))
 
+  // Use useTransform instead of interpolate on MotionValue
+  const backdropBlur = useTransform(scrollYProgress, [0, 1], ['blur(0px)', 'blur(16px)'])
+  const backgroundOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 0.85])
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
       <motion.nav
@@ -30,8 +34,8 @@ export function Navbar({ settings = { name: '', initials: '' } }: { settings?: {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          backdropFilter: scrollYProgress.interpolate([0, 1], ['blur(0px)', 'blur(16px)']),
-          backgroundColor: scrollYProgress.interpolate([0, 1], ['rgba(9, 9, 11, 0.6)', 'rgba(9, 9, 11, 0.85)']),
+          backdropFilter: backdropBlur,
+          backgroundColor: backgroundOpacity,
         }}
         className={cn(
           'flex w-full max-w-5xl items-center justify-between gap-4 rounded-full px-3 py-2 transition-all duration-300 md:px-4',
