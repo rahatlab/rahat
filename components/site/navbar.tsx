@@ -24,11 +24,6 @@ export function Navbar({ settings = { name: '', initials: '' } }: { settings?: {
 
   // Use useTransform instead of interpolate on MotionValue
   const backdropBlur = useTransform(scrollYProgress, [0, 1], ['blur(0px)', 'blur(16px)'])
-  const backgroundOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 0.85])
-  const backgroundColor = useTransform(
-    backgroundOpacity,
-    (opacity) => `rgba(9, 9, 11, ${opacity})`
-  )
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
@@ -39,7 +34,7 @@ export function Navbar({ settings = { name: '', initials: '' } }: { settings?: {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         style={{
           backdropFilter: backdropBlur,
-          backgroundColor: backgroundColor,
+          backgroundColor: 'transparent',
         }}
         className={cn(
           'flex w-full max-w-5xl items-center justify-between gap-4 rounded-full px-3 py-2 transition-all duration-300 md:px-4',
