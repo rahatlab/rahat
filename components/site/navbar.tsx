@@ -1,7 +1,7 @@
 'use client'
 
 import type { SiteSettings } from '@/lib/types'
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useMotionValue } from 'framer-motion'
 import { Menu, ShieldCheck, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { ThemeToggle } from './theme-toggle'
 
 const links = [
+  { href: '/', label: 'Home' },
   { href: '/#skills', label: 'Skills' },
   { href: '/#projects', label: 'Projects' },
   { href: '/blog', label: 'Blog' },
@@ -17,9 +18,9 @@ const links = [
 
 export function Navbar({ settings = { name: '', initials: '' } }: { settings?: { name: string; initials: string } }) {
   const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const { scrollY } = useScroll()
-  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 24))
+  const scrollYProgress = useMotionValue(0)
+  useScroll().scrollY.on('change', (v) => scrollYProgress.set(Math.min(v / 100, 1)))
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
@@ -28,9 +29,12 @@ export function Navbar({ settings = { name: '', initials: '' } }: { settings?: {
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          backdropFilter: scrollYProgress.interpolate([0, 1], ['blur(0px)', 'blur(16px)']),
+          backgroundColor: scrollYProgress.interpolate([0, 1], ['rgba(9, 9, 11, 0.6)', 'rgba(9, 9, 11, 0.85)']),
+        }}
         className={cn(
-          'glass flex w-full max-w-5xl items-center justify-between gap-4 rounded-full px-3 py-2 transition-shadow duration-300 md:px-4',
-          scrolled && 'shadow-lg shadow-black/5 dark:shadow-black/40',
+          'flex w-full max-w-5xl items-center justify-between gap-4 rounded-full px-3 py-2 transition-all duration-300 md:px-4',
         )}>
         <Link href="/" className="group flex items-center gap-2 rounded-full pr-2" aria-label={`${settings.name} home`}>
           <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan to-violet font-mono text-xs font-bold text-white">

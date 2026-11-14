@@ -10,6 +10,9 @@ import { getPosts, getProjects, getSettings, getSkills } from '@/lib/data'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
+// Force dynamic rendering so settings changes show immediately
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Alex Rivera — Full-Stack Developer',
   description:
