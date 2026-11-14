@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trend/manifest.json",
+  "name": "Alex Rivera — Portfolio",
+  "short_name": "Alex Rivera",
+  "description": "Full-stack web developer portfolio — projects, blog, skills and contact.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-light-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-dark-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
