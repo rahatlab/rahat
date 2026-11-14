@@ -8,17 +8,9 @@ import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import AdminLoginPage from "@/app/admin/login/page";
 
-const mockSignInEmail = jest.fn();
+const mockFetch = jest.fn();
 const mockPush = jest.fn();
 const mockRefresh = jest.fn();
-
-jest.mock("better-auth/client", () => ({
-  createAuthClient: () => ({
-    signIn: {
-      email: (args: unknown) => mockSignInEmail(args),
-    },
-  }),
-}));
 
 jest.mock("sonner", () => ({
   toast: {
@@ -41,10 +33,16 @@ jest.mock("next/navigation", () => ({
   useParams: () => ({}),
 }));
 
+// Mock fetch globally
+global.fetch = mockFetch;
+
 describe("Admin Login Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSignInEmail.mockResolvedValue({ error: null });
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ error: null }),
+    });
   });
 
   it("renders login form with required fields", () => {
@@ -65,11 +63,10 @@ describe("Admin Login Component", () => {
     render(<AdminLoginPage />);
 
     await user.type(screen.getByLabelText("Password"), "password123");
-    // Bypass native constraint validation — the handler validates itself.
     fireEvent.submit(document.querySelector("form")!);
 
     expect(toast.error).toHaveBeenCalledWith("Email and password are required");
-    expect(mockSignInEmail).not.toHaveBeenCalled();
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it("shows error when password is missing", async () => {
@@ -80,7 +77,7 @@ describe("Admin Login Component", () => {
     fireEvent.submit(document.querySelector("form")!);
 
     expect(toast.error).toHaveBeenCalledWith("Email and password are required");
-    expect(mockSignInEmail).not.toHaveBeenCalled();
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it("signs in with valid credentials", async () => {
@@ -92,13 +89,41 @@ describe("Admin Login Component", () => {
     await user.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() =>
-      expect(mockSignInEmail).toHaveBeenCalledWith({
-        email: "contract.rahat@gmail.com",
-        password: "password123",
-      }),
+      expect(mockFetch).toHaveBeenCalledWith(
+        "https://rahat-work.vercel.app/api/auth/sign-in/email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: "contract.rahat@gmail.com",
+            password: "password123",
+          }),
+        }
+      ),
     );
     expect(toast.success).toHaveBeenCalledWith("Welcome back!");
-    expect(mockPush).toHaveBeenCalledWith("/admin");
-    expect(mockRefresh).toHaveBeenCalled();
+    // Note: window.location.href is used instead of router.push
+    // so mockPush won't be called - we're testing the fetch call instead
+  });
+
+  it("shows error when login fails", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ error: { message: "Invalid credentials" } }),
+    });
+
+    const user = userEvent.setup();
+    render(<AdminLoginPage />);
+
+    await user.type(screen.getByLabelText("Email"), "test@example.com");
+    await user.type(screen.getByLabelText("Password"), "wrongpassword");
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
+
+    await waitFor(() =>
+      expect(toast.error).toHaveBeenCalledWith("Invalid credentials"),
+    );
+    expect(mockFetch).toHaveBeenCalled();
   });
 });

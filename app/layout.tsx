@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/site/theme-provider'
 import { CommandPalette } from '@/components/site/command-palette'
+import { ServiceWorkerCleanup } from '@/components/site/service-worker-cleanup'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
@@ -56,32 +57,7 @@ export default function RootLayout({
           <Toaster position="bottom-right" theme="system" richColors closeButton />
         </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
-        <script
-          id="sw-register"
-          dangerouslySetInnerHTML={{
-            __html: process.env.NODE_ENV === 'production'
-              ? `
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').then(
-                  (reg) => console.log('[SW] registered', reg.scope),
-                  (err) => console.error('[SW] registration failed', err)
-                );
-              }
-            `
-              : `
-              if ('serviceWorker' in navigator) {
-                // Dev: a cached page holds stale HTML/chunks and breaks React
-                // hydration — always run the dev server without a SW.
-                navigator.serviceWorker.getRegistrations().then((regs) =>
-                  regs.forEach((reg) => reg.unregister())
-                );
-                if (window.caches) {
-                  caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
-                }
-              }
-            `,
-          }}
-        />
+        <ServiceWorkerCleanup />
       </body>
     </html>
   )
