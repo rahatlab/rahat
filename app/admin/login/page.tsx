@@ -2,18 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { createAuthClient } from "better-auth/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const authClient = createAuthClient();
-
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -27,7 +22,17 @@ export default function AdminLoginPage() {
     }
 
     setLoading(true);
-    const { error } = await authClient.signIn.email({ email, password });
+    
+    // Use direct fetch API (bypasses better-auth client issues)
+    const response = await fetch('https://rahat-work.vercel.app/api/auth/sign-in/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const { error } = await response.json();
     setLoading(false);
 
     if (error) {
@@ -35,8 +40,9 @@ export default function AdminLoginPage() {
       return;
     }
     toast.success("Welcome back!");
-    // Full page reload so the HTTP-only session cookie is sent to /admin
+    // 🔑 CRITICAL: Full page reload + immediate return
     window.location.href = "/admin";
+    return; // Exit early to ensure redirect happens
   }
 
   return (
