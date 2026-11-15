@@ -12,8 +12,15 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
-    const { folder = "portfolio-rahat", resource_type = "image" } =
-      (await req.json()) ?? {};
+    let body: { folder?: string; resource_type?: string } = {};
+    try {
+      body = (await req.json()) ?? {};
+    } catch {
+      // If JSON parsing fails, use defaults
+      body = {};
+    }
+    
+    const { folder = "portfolio-rahat", resource_type = "image" } = body;
 
     const timestamp = Math.round(new Date().getTime() / 1000);
 
@@ -45,7 +52,7 @@ export async function POST(req: Request) {
   } catch (e) {
     console.error("[cloudinary/sign] error:", e);
     return NextResponse.json(
-      { error: "Failed to generate upload signature" },
+      { error: "Failed to generate upload signature", details: String(e) },
       { status: 500 },
     );
   }
