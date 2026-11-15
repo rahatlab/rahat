@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/store'
 import type { Post } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { CardSkeleton, ImageInput, inputClass, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 type Draft = Omit<Post, 'id' | 'slug' | 'createdAt'> & { id?: string }
 const blank: Draft = { title: '', excerpt: '', content: '', cover: '', tags: [], published: true }
@@ -85,6 +86,7 @@ export function BlogManager() {
   const params = useSearchParams()
   const router = useRouter()
   const [draft, setDraft] = useState<Draft | null>(params.get('new') ? { ...blank } : null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ open: boolean; post: Post | null }>({ open: false, post: null })
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setDraft((d) => (d ? { ...d, [k]: v } : d))
 
   useEffect(() => {
@@ -118,14 +120,20 @@ export function BlogManager() {
   }
 
   const remove = async (p: Post) => {
-    if (!window.confirm(`Delete "${p.title}"?`)) return
+    setDeleteConfirm({ open: true, post: p })
+  }
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm.post) return
     try {
-      await apiDeletePost(p.id)
+      await apiDeletePost(deleteConfirm.post.id)
       toast.success('Post deleted')
       const updated = await apiGetPosts()
       setPosts(updated)
     } catch {
       toast.error('Could not delete post')
+    } finally {
+      setDeleteConfirm({ open: false, post: null })
     }
   }
 
@@ -205,6 +213,16 @@ export function BlogManager() {
           </li>
         ))}
       </ul>
+
+      <ConfirmDialog
+        open={deleteConfirm.open}
+        onOpenChange={(open) => setDeleteConfirm((prev) => ({ ...prev, open }))}
+        title="Delete post?"
+        description={`Are you sure you want to delete "${deleteConfirm.post?.title}"?`}
+        confirmText="Delete post"
+        variant="destructive"
+        onConfirm={confirmDelete}
+      />
     </div>
   )
 }

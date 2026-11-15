@@ -9,6 +9,7 @@ import { apiDeleteProject, apiGetProjects, apiSaveProject } from '@/lib/api'
 import { cloudinaryUpload, cloudinaryUploadMultiple } from '@/lib/cloudinary'
 import { PROJECT_CATEGORIES, type Project, type ProjectCategory } from '@/lib/types'
 import { CardSkeleton, Field, ghostBtn, inputClass, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 type Draft = Omit<Project, 'id' | 'slug' | 'createdAt'> & { id?: string }
 
@@ -102,6 +103,7 @@ export function ProjectManager() {
   const params = useSearchParams()
   const router = useRouter()
   const [draft, setDraft] = useState<Draft | null>(params.get('new') ? { ...blank } : null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ open: boolean; project: Project | null }>({ open: false, project: null })
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setDraft((d) => (d ? { ...d, [k]: v } : d))
 
   useEffect(() => {
@@ -136,14 +138,20 @@ export function ProjectManager() {
   }
 
   const remove = async (p: Project) => {
-    if (!window.confirm(`Delete "${p.title}"? This cannot be undone.`)) return
+    setDeleteConfirm({ open: true, project: p })
+  }
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm.project) return
     try {
-      await apiDeleteProject(p.id)
+      await apiDeleteProject(deleteConfirm.project.id)
       toast.success('Project deleted')
       const updated = await apiGetProjects()
       setProjects(updated)
     } catch {
       toast.error('Could not delete project')
+    } finally {
+      setDeleteConfirm({ open: false, project: null })
     }
   }
 
@@ -247,6 +255,16 @@ export function ProjectManager() {
           </li>
         ))}
       </ul>
+
+      <ConfirmDialog
+        open={deleteConfirm.open}
+        onOpenChange={(open) => setDeleteConfirm((prev) => ({ ...prev, open }))}
+        title="Delete project?"
+        description={`Are you sure you want to delete "${deleteConfirm.project?.title}"? This cannot be undone.`}
+        confirmText="Delete project"
+        variant="destructive"
+        onConfirm={confirmDelete}
+      />
     </div>
   )
 }

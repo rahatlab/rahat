@@ -7,10 +7,12 @@ import { fileToDataUrl } from '@/lib/store'
 import type { SiteSettings } from '@/lib/types'
 import { apiGetSettings, apiUpdateSettings } from '@/lib/api'
 import { ghostBtn, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 export function SettingsForm() {
   const [settings, setSettings] = useState<SiteSettings | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showResetDialog, setShowResetDialog] = useState(false)
 
   const load = async () => {
     try {
@@ -126,15 +128,23 @@ export function SettingsForm() {
         <button
           type="button"
           className={`${ghostBtn} text-destructive`}
-          onClick={() => {
-            if (!window.confirm('Reset all projects, posts, messages and settings?')) return
-            // Reset via API is not implemented — show message
-            toast.error('Reset not implemented via API — use db:seed')
-          }}
+          onClick={() => setShowResetDialog(true)}
         >
           <RotateCcw className="size-4" aria-hidden /> Reset demo data
         </button>
       </Panel>
+
+      <ConfirmDialog
+        open={showResetDialog}
+        onOpenChange={setShowResetDialog}
+        title="Reset all data?"
+        description="This will permanently delete all projects, posts, messages, and settings. This action cannot be undone."
+        confirmText="Reset everything"
+        variant="destructive"
+        onConfirm={async () => {
+          toast.error('Reset not implemented via API — use db:seed')
+        }}
+      />
     </form>
   )
 }
