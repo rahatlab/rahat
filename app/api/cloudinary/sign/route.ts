@@ -16,7 +16,6 @@ export async function POST(req: Request) {
     try {
       body = (await req.json()) ?? {};
     } catch {
-      // If JSON parsing fails, use defaults
       body = {};
     }
     
@@ -35,10 +34,16 @@ export async function POST(req: Request) {
       timestamp,
     };
 
+    // Debug: log what we're signing
+    console.log("[cloudinary/sign] paramsToSign:", JSON.stringify(paramsToSign));
+    console.log("[cloudinary/sign] api_secret length:", process.env.CLOUDINARY_API_SECRET?.length);
+
     const signature = cloudinary.utils.api_sign_request(
       paramsToSign,
       process.env.CLOUDINARY_API_SECRET!,
     );
+
+    console.log("[cloudinary/sign] generated signature:", signature);
 
     return NextResponse.json({
       signature,
