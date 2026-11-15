@@ -1,37 +1,24 @@
 /**
- * Cloudinary signed upload helper.
- * 1. Calls /api/cloudinary/sign to get signature + credentials
- * 2. Posts file directly to Cloudinary
- * Returns the secure URL of the uploaded asset.
+ * Cloudinary upload helper using backend API (no signed uploads needed).
+ * Posts file to /api/cloudinary/upload which uses Cloudinary SDK directly.
  */
 
 export async function cloudinaryUpload(file: File, folder = "portfolio-rahat"): Promise<string> {
-  // Get signature from our API
-  const signRes = await fetch("/api/cloudinary/sign", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ folder, resource_type: "image" }),
-  });
-  if (!signRes.ok) throw new Error("Failed to get upload signature");
-  const signData = await signRes.json();
-
-  // Build form data for Cloudinary direct upload
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("api_key", signData.apiKey);
-  formData.append("timestamp", signData.timestamp);
-  formData.append("signature", signData.signature);
-  formData.append("folder", signData.folder);
+  formData.append("folder", folder);
 
-  const uploadRes = await fetch(signData.uploadUrl, {
+  const res = await fetch("/api/cloudinary/upload", {
     method: "POST",
     body: formData,
   });
-  if (!uploadRes.ok) {
-    const text = await uploadRes.text().catch(() => "");
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
     throw new Error(`Cloudinary upload failed: ${text}`);
   }
-  const result = await uploadRes.json();
+
+  const result = await res.json();
   return result.secure_url;
 }
 
