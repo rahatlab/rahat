@@ -4,7 +4,7 @@ import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/site/theme-provider'
 import { CommandPalette } from '@/components/site/command-palette'
-import { ServiceWorkerCleanup } from '@/components/site/service-worker-cleanup'
+import { RegisterSW } from '@/components/site/register-sw'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
@@ -57,7 +57,7 @@ export default function RootLayout({
           <Toaster position="bottom-right" theme="system" richColors closeButton />
         </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
-        <ServiceWorkerCleanup />
+        <RegisterSW />
       </body>
     </html>
   )
