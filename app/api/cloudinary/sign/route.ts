@@ -16,7 +16,13 @@ export async function POST(req: Request) {
       (await req.json()) ?? {};
 
     const timestamp = Math.round(new Date().getTime() / 1000);
+
+    // Cloudinary requires ALL parameters (except file and signature) to be included
+    // in the signature, sorted alphabetically by key.
+    // Frontend sends: api_key, folder, resource_type, timestamp, signature, file
+    // So we must sign: api_key, folder, resource_type, timestamp (alphabetically)
     const paramsToSign = {
+      api_key: process.env.CLOUDINARY_API_KEY!,
       folder,
       resource_type,
       timestamp,
