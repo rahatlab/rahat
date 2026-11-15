@@ -5,6 +5,7 @@ import { createAuthClient } from "better-auth/client";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AdminShell } from "./admin-shell";
+import { AdminLoading } from "./admin-loading";
 
 const authClient = createAuthClient();
 
@@ -53,8 +54,8 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
 
   // Public auth pages render bare — no admin shell/sidebar.
   if (isPublic) return <>{children}</>;
-  if (checking) return null;
-  if (!authed) return null;
+  // Console boot loader instead of a blank screen while checking / redirecting.
+  if (checking || !authed) return <AdminLoading />;
   // Protected pages get the full admin console around them.
   return <AdminShell>{children}</AdminShell>;
 }

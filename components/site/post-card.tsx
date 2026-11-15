@@ -7,7 +7,7 @@ import { SmartImage } from './smart-image'
 export function PostCard({ post }: { post: Post }) {
   return (
     <article className="glass group relative flex h-full flex-col overflow-hidden rounded-3xl transition-colors hover:border-primary/40">
-      <div className="aspect-[16/9] overflow-hidden">
+      <div className="relative aspect-[16/9] overflow-hidden">
         <SmartImage
           src={post.cover || '/placeholder.svg'}
           alt=""
