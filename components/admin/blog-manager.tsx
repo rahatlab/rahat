@@ -9,7 +9,7 @@ import { apiDeletePost, apiGetPosts, apiSavePost } from '@/lib/api'
 import { formatDate } from '@/lib/store'
 import type { Post } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { ghostBtn, ImageInput, inputClass, Panel, primaryBtn, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { CardSkeleton, ImageInput, inputClass, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
 
 type Draft = Omit<Post, 'id' | 'slug' | 'createdAt'> & { id?: string }
 const blank: Draft = { title: '', excerpt: '', content: '', cover: '', tags: [], published: true }
@@ -131,8 +131,10 @@ export function BlogManager() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <span className="font-mono text-muted-foreground">Loading posts…</span>
+      <div className="flex flex-col gap-6">
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
       </div>
     )
   }
@@ -167,7 +169,9 @@ export function BlogManager() {
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button type="button" onClick={close} className={ghostBtn}>Cancel</button>
-              <button type="submit" className={primaryBtn}>{draft.published ? 'Publish' : 'Save draft'}</button>
+              <SaveButton onClick={onSubmit} onSuccessMessage={draft.published ? 'Post published' : 'Draft saved'} onErrorMessage="Could not save post">
+                {draft.published ? 'Publish' : 'Save draft'}
+              </SaveButton>
             </div>
           </Panel>
         </form>

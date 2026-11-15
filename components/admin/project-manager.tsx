@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { apiDeleteProject, apiGetProjects, apiSaveProject } from '@/lib/api'
 import { cloudinaryUpload, cloudinaryUploadMultiple } from '@/lib/cloudinary'
 import { PROJECT_CATEGORIES, type Project, type ProjectCategory } from '@/lib/types'
-import { Field, ghostBtn, inputClass, Panel, primaryBtn, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { CardSkeleton, Field, ghostBtn, inputClass, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
 
 type Draft = Omit<Project, 'id' | 'slug' | 'createdAt'> & { id?: string }
 
@@ -149,8 +149,10 @@ export function ProjectManager() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <span className="font-mono text-muted-foreground">Loading projects…</span>
+      <div className="flex flex-col gap-6">
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
       </div>
     )
   }
@@ -220,7 +222,9 @@ export function ProjectManager() {
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button type="button" onClick={close} className={ghostBtn}>Cancel</button>
-              <button type="submit" className={primaryBtn}>{draft.id ? 'Save changes' : 'Publish project'}</button>
+              <SaveButton onClick={onSubmit} onSuccessMessage={draft.id ? 'Project updated' : 'Project published'} onErrorMessage="Could not save project">
+                {draft.id ? 'Save changes' : 'Publish project'}
+              </SaveButton>
             </div>
           </Panel>
         </form>

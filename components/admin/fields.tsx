@@ -157,6 +157,90 @@ export function Panel({ title, description, children, actions }: { title: string
 }
 
 export const primaryBtn =
-  'inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60'
+  'inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer'
 export const ghostBtn =
-  'inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-glass-border px-4 text-sm font-medium transition-colors hover:bg-foreground/5'
+  'inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-glass-border px-4 text-sm font-medium transition-colors hover:bg-foreground/5 cursor-pointer'
+
+/** Reusable save button with loading state and toast */
+export function SaveButton({
+  loading,
+  children,
+  onSuccessMessage = 'Saved',
+  onErrorMessage = 'Failed to save',
+  className,
+  ...props
+}: {
+  loading?: boolean
+  children: React.ReactNode
+  onSuccessMessage?: string
+  onErrorMessage?: string
+  className?: string
+  onClick?: () => Promise<void> | void
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    if (isLoading) return
+    setIsLoading(true)
+    try {
+      await props.onClick?.()
+      toast.success(onSuccessMessage)
+    } catch (err) {
+      toast.error(onErrorMessage)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <button
+      type="submit"
+      disabled={isLoading || loading}
+      className={cn(primaryBtn, className)}
+      onClick={handleClick}
+      {...props}
+    >
+      {isLoading ? (
+        <>
+          <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          Saving...
+        </>
+      ) : (
+        children
+      )}
+    </button>
+  )
+}
+
+/** Skeleton loader for page transitions */
+export function Skeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn('animate-pulse bg-muted rounded-xl', className)} />
+  )
+}
+
+export function TextSkeleton({ lines = 3, className }: { lines?: number; className?: string }) {
+  return (
+    <div className={cn('space-y-2', className)}>
+      {Array.from({ length: lines }).map((_, i) => (
+        <Skeleton key={i} className="h-4 w-full" style={{ width: i === lines - 1 ? '60%' : '100%' }} />
+      ))}
+    </div>
+  )
+}
+
+export function CardSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn('glass rounded-2xl p-5 md:p-6 space-y-4', className)}>
+      <Skeleton className="h-6 w-1/3" />
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-full" />
+    </div>
+  )
+}

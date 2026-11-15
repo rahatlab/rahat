@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { fileToDataUrl } from '@/lib/store'
 import type { SiteSettings } from '@/lib/types'
 import { apiGetSettings, apiUpdateSettings } from '@/lib/api'
-import { ghostBtn, Panel, primaryBtn, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { ghostBtn, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
 
 export function SettingsForm() {
   const [settings, setSettings] = useState<SiteSettings | null>(null)
@@ -30,8 +30,10 @@ export function SettingsForm() {
 
   if (loading || !settings) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <span className="font-mono text-muted-foreground">Loading settings…</span>
+      <div className="flex flex-col gap-6">
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
       </div>
     )
   }
@@ -59,7 +61,9 @@ export function SettingsForm() {
           <h1 className="text-3xl font-bold">Site settings</h1>
           <p className="text-muted-foreground">Control your hero content, CV, socials and availability.</p>
         </div>
-        <button type="submit" className={primaryBtn}>Save changes</button>
+        <SaveButton onClick={onSubmit} onSuccessMessage="Settings saved" onErrorMessage="Could not save settings">
+          Save changes
+        </SaveButton>
       </div>
 
       <Panel title="Availability" description="Shown as a live badge in the hero.">
