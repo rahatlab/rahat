@@ -8,7 +8,7 @@ import { Hero } from "@/components/site/hero";
 
 describe("Hero Component", () => {
   const defaultSettings = {
-    name: "Alex Rivera",
+    name: "Rahat",
     headline: "I build fast, beautiful products for the web.",
     bio: "Full-stack engineer with 7+ years shipping production apps in React, Next.js, Node and Postgres. I care about performance, accessibility and interfaces that feel effortless.",
     roles: ["Full-Stack Web Developer", "UI/UX Architect", "Problem Solver", "Open Source Contributor"],
@@ -29,7 +29,7 @@ describe("Hero Component", () => {
   });
 
   it("greets with the configured name", () => {
-    expect(screen.getByText("Hi, I'm Alex Rivera")).toBeInTheDocument();
+    expect(screen.getByText("Hi, I'm Rahat")).toBeInTheDocument();
   });
 
   it("exposes all roles to screen readers via the Typewriter sr-only text", () => {

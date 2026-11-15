@@ -5,7 +5,7 @@ export const DATA_VERSION = 1
 export const seedData: SiteData = {
   version: DATA_VERSION,
   settings: {
-    name: 'Alex Rivera',
+    name: 'Rahat',
     initials: 'AR',
     headline: 'I build fast, beautiful products for the web.',
     bio: 'Full-stack engineer with 7+ years shipping production apps in React, Next.js, Node and Postgres. I care about performance, accessibility and interfaces that feel effortless.',

@@ -4,7 +4,7 @@ export const runtime = 'nodejs'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const title = searchParams.get('title') || 'Alex Rivera — Full-Stack Developer'
+  const title = searchParams.get('title') || 'Rahat — Full-Stack Developer'
 
   return new ImageResponse(
     (

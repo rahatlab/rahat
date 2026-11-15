@@ -13,11 +13,11 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jet
 
 export const metadata: Metadata = {
   title: {
-    default: 'Alex Rivera — Full-Stack Developer',
-    template: '%s · Alex Rivera',
+    default: 'Rahat — Full-Stack Developer',
+    template: '%s · Rahat',
   },
   description:
-    'Portfolio of Alex Rivera, a full-stack web developer and UI/UX architect building fast, accessible products with React, Next.js and TypeScript.',
+    'Portfolio of Rahat, a full-stack web developer and UI/UX architect building fast, accessible products with React, Next.js and TypeScript.',
   generator: 'v0.app',
   icons: {
     icon: [

@@ -14,11 +14,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Alex Rivera — Full-Stack Developer',
+  title: 'Rahat — Full-Stack Developer',
   description:
-    'Portfolio of Alex Rivera, a full-stack web developer and UI/UX architect building fast, accessible products with React, Next.js and TypeScript.',
+    'Portfolio of Rahat, a full-stack web developer and UI/UX architect building fast, accessible products with React, Next.js and TypeScript.',
   openGraph: {
-    title: 'Alex Rivera — Full-Stack Developer',
+    title: 'Rahat — Full-Stack Developer',
     description: 'Building fast, beautiful products for the web.',
     type: 'website',
     url: siteUrl,

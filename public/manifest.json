@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.wp.org/trend/manifest.json",
-  "name": "Alex Rivera — Portfolio",
-  "short_name": "Alex Rivera",
+  "name": "Rahat — Portfolio",
+  "short_name": "Rahat",
   "description": "Full-stack web developer portfolio — projects, blog, skills and contact.",
   "start_url": "/",
   "display": "standalone",

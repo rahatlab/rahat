@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: 'Blog',
   description: 'Technical articles on web development and design.',
   openGraph: {
-    title: 'Blog — Alex Rivera',
+    title: 'Blog — Rahat',
     description: 'Technical articles on web development and design.',
     type: 'website',
     url: `${siteUrl}/blog`,
