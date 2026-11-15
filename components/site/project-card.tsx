@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { Github } from './brand-icons'
 import Link from 'next/link'
 import type { Project } from '@/lib/types'
+import { SmartImage } from './smart-image'
 
 export function ProjectCard({ project }: { project: Project }) {
   const x = useMotionValue(0.5)
@@ -43,12 +44,11 @@ export function ProjectCard({ project }: { project: Project }) {
       >
         <motion.div aria-hidden style={{ background: glare }} className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity group-hover:opacity-100" />
         <Link href={`/projects/${project.slug}`} className="relative block aspect-[16/10] overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element -- supports admin-uploaded data URLs */}
-          <img
+          <SmartImage
             src={project.image || '/placeholder.svg'}
             alt={`${project.title} preview`}
-            loading="lazy"
-            className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="transition-transform duration-700 group-hover:scale-105"
           />
           <span className="glass absolute left-3 top-3 rounded-full bg-background/50 px-3 py-1 font-mono text-[11px]">
             {project.category}

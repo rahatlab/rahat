@@ -10,20 +10,25 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-light-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
     },
     {
-      "src": "/icon-dark-32x32.png",
-      "sizes": "32x32",
+      "src": "/logo-light.png",
+      "sizes": "405x390",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-dark.png",
+      "sizes": "405x390",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/apple-icon.png",
-      "sizes": "180x180",
+      "sizes": "405x390",
       "type": "image/png"
     }
   ]

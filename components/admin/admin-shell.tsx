@@ -7,6 +7,7 @@ import { useState, type ReactNode } from 'react'
 import { createAuthClient } from 'better-auth/client'
 import { useSiteData } from '@/lib/store'
 import { cn } from '@/lib/utils'
+import { Logo } from '@/components/site/logo'
 import { ThemeToggle } from '@/components/site/theme-toggle'
 
 const authClient = createAuthClient()
@@ -28,11 +29,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const sidebar = (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2 px-2">
-        <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan to-violet font-heading text-sm font-bold text-white">
-          {settings.initials}
-        </span>
+        <Logo className="size-9 shrink-0" alt="Rahat logo" />
         <div>
-          <p className="text-sm font-semibold leading-tight">{settings.name}</p>
+          <p className="text-sm font-semibold leading-tight">{settings.name || 'Rahat'}</p>
           <p className="font-mono text-[11px] text-muted-foreground">admin console</p>
         </div>
       </div>

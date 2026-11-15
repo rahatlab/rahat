@@ -6,6 +6,7 @@ import { Menu, ShieldCheck, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Logo } from './logo'
 import { ThemeToggle } from './theme-toggle'
 
 const links = [
@@ -40,10 +41,8 @@ export function Navbar({ settings = { name: '', initials: '' } }: { settings?: {
           'flex w-full max-w-5xl items-center justify-between gap-4 rounded-full px-3 py-2 transition-all duration-300 md:px-4',
         )}>
         <Link href="/" className="group flex items-center gap-2 rounded-full pr-2" aria-label={`${settings.name} home`}>
-          <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan to-violet font-mono text-xs font-bold text-white">
-            {settings.initials}
-          </span>
-          <span className="hidden font-heading text-sm font-semibold sm:inline">{settings.name}</span>
+          <Logo className="size-8 shrink-0" alt={`${settings.name || 'Rahat'} logo`} />
+          <span className="hidden font-heading text-sm font-semibold sm:inline">{settings.name || 'Rahat'}</span>
         </Link>
 
         <ul className="hidden items-center gap-1 md:flex">

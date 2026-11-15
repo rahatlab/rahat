@@ -7,11 +7,13 @@ import { Github } from './brand-icons'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Reveal } from './motion'
+import { SmartImage } from './smart-image'
 
 export function ProjectDetail({ project }: { project: Project }) {
   const [active, setActive] = useState(0)
 
-  const images = [project.image, ...project.gallery].filter(Boolean)
+  // Cover first, then gallery — dedupe so the same image never shows twice
+  const images = [project.image, ...project.gallery.filter((g) => g !== project.image)].filter(Boolean)
 
   return (
     <article className="px-4 pb-24 pt-32">
@@ -39,7 +41,17 @@ export function ProjectDetail({ project }: { project: Project }) {
         </motion.header>
 
         <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="glass mt-10 overflow-hidden rounded-3xl p-2">
-          <img src={images[active] || '/placeholder.svg'} alt={`${project.title} screenshot ${active + 1}`} className="aspect-[16/10] w-full rounded-2xl object-cover" />
+          <SmartImage
+            key={images[active]}
+            src={images[active] || '/placeholder.svg'}
+            alt={`${project.title} screenshot ${active + 1}`}
+            fill={false}
+            width={1600}
+            height={1000}
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            priority={active === 0}
+            className="aspect-[16/10] w-full rounded-2xl object-cover"
+          />
         </motion.div>
         {images.length > 1 && (
           <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
@@ -52,7 +64,15 @@ export function ProjectDetail({ project }: { project: Project }) {
                 aria-pressed={active === i}
                 className={`shrink-0 overflow-hidden rounded-xl border-2 transition-colors ${active === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'}`}
               >
-                <img src={src} alt="" className="h-16 w-28 object-cover" />
+                <SmartImage
+                  src={src}
+                  alt=""
+                  fill={false}
+                  width={112}
+                  height={64}
+                  sizes="112px"
+                  className="h-16 w-28 rounded-xl object-cover"
+                />
               </button>
             ))}
           </div>

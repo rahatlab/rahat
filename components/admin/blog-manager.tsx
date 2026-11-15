@@ -9,7 +9,7 @@ import { apiDeletePost, apiGetPosts, apiSavePost } from '@/lib/api'
 import { formatDate } from '@/lib/store'
 import type { Post } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { CardSkeleton, ImageInput, inputClass, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { CardSkeleton, ghostBtn, ImageInput, inputClass, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 type Draft = Omit<Post, 'id' | 'slug' | 'createdAt'> & { id?: string }
@@ -103,17 +103,21 @@ export function BlogManager() {
     router.replace('/admin/blog')
   }
 
+  const save = async () => {
+    if (!draft) return
+    if (draft.title.trim().length < 3) throw new Error('Title is required.')
+    if (draft.content.trim().length < 20) throw new Error('Write a bit more content first.')
+    await apiSavePost({ ...draft, title: draft.title.trim(), excerpt: draft.excerpt.trim() || draft.content.replace(/[#*_`>\[\]]/g, '').slice(0, 160) })
+    close()
+    const updated = await apiGetPosts()
+    setPosts(updated)
+  }
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!draft) return
-    if (draft.title.trim().length < 3) return toast.error('Title is required.')
-    if (draft.content.trim().length < 20) return toast.error('Write a bit more content first.')
     try {
-      await apiSavePost({ ...draft, title: draft.title.trim(), excerpt: draft.excerpt.trim() || draft.content.replace(/[#*_`>\[\]]/g, '').slice(0, 160) })
-      toast.success(draft.published ? 'Post published' : 'Draft saved')
-      close()
-      const updated = await apiGetPosts()
-      setPosts(updated)
+      await save()
+      toast.success(draft?.published ? 'Post published' : 'Draft saved')
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Could not save post')
     }
@@ -177,7 +181,7 @@ export function BlogManager() {
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button type="button" onClick={close} className={ghostBtn}>Cancel</button>
-              <SaveButton onClick={onSubmit} onSuccessMessage={draft.published ? 'Post published' : 'Draft saved'} onErrorMessage="Could not save post">
+              <SaveButton onClick={save} onSuccessMessage={draft.published ? 'Post published' : 'Draft saved'} onErrorMessage="Could not save post">
                 {draft.published ? 'Publish' : 'Save draft'}
               </SaveButton>
             </div>
@@ -185,10 +189,10 @@ export function BlogManager() {
         </form>
       )}
 
-      <ul className="grid gap-3">
+      <ul className="grid grid-cols-1 gap-3">
         {posts.map((p) => (
-          <li key={p.id} className="glass flex flex-col gap-4 rounded-2xl p-3 sm:flex-row sm:items-center">
-            <img src={p.cover || '/placeholder.svg'} alt="" className="aspect-[16/9] w-full rounded-xl object-cover sm:w-32" />
+          <li key={p.id} className="glass flex min-w-0 flex-col gap-4 rounded-2xl p-3 sm:flex-row sm:items-center">
+            <img src={p.cover || '/placeholder.svg'} alt="" className="aspect-[16/9] w-full max-w-full rounded-xl object-cover sm:w-32" />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <p className="truncate font-semibold">{p.title}</p>

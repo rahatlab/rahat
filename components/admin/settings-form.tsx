@@ -44,12 +44,16 @@ export function SettingsForm() {
   const set = <K extends keyof SiteSettings>(k: K, v: SiteSettings[K]) => setSettings((p) => p ? { ...p, [k]: v } : p)
   const setSocial = (k: keyof SiteSettings['socials'], v: string) => setSettings((p) => p ? { ...p, socials: { ...p.socials, [k]: v } } : p)
 
+  const save = async () => {
+    if (!s.name.trim() || !s.headline.trim()) throw new Error('Name and headline are required.')
+    if (s.roles.length === 0) throw new Error('Add at least one typewriter role.')
+    await apiUpdateSettings(s)
+  }
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!s.name.trim() || !s.headline.trim()) return toast.error('Name and headline are required.')
-    if (s.roles.length === 0) return toast.error('Add at least one typewriter role.')
     try {
-      await apiUpdateSettings(s)
+      await save()
       toast.success('Settings saved', { description: 'Your changes are live on the site.' })
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Could not save settings')
@@ -63,7 +67,7 @@ export function SettingsForm() {
           <h1 className="text-3xl font-bold">Site settings</h1>
           <p className="text-muted-foreground">Control your hero content, CV, socials and availability.</p>
         </div>
-        <SaveButton onClick={onSubmit} onSuccessMessage="Settings saved" onErrorMessage="Could not save settings">
+        <SaveButton onClick={save} onSuccessMessage="Settings saved" onErrorMessage="Could not save settings">
           Save changes
         </SaveButton>
       </div>

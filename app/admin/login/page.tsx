@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/site/logo";
 
 export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
@@ -48,9 +49,13 @@ export default function AdminLoginPage() {
   return (
     <main className="flex min-h-svh items-center justify-center px-4">
       <div className="glass w-full max-w-md rounded-3xl p-8">
-        <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4">
-          <Loader2 className="size-5 animate-spin" aria-hidden />
-        </span>
+        <div className="mb-6 flex items-center gap-3">
+          <Logo className="size-11 shrink-0" alt="Rahat logo" />
+          <div>
+            <p className="font-heading text-lg font-bold leading-tight">Rahat</p>
+            <p className="text-xs text-muted-foreground">Admin console</p>
+          </div>
+        </div>
         <h1 className="mb-2 text-2xl font-bold">Admin login</h1>
         <p className="mb-8 text-sm text-muted-foreground">
           Sign in to manage your portfolio.

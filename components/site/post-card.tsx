@@ -2,17 +2,17 @@ import { ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate, readingTime } from '@/lib/store'
 import type { Post } from '@/lib/types'
+import { SmartImage } from './smart-image'
 
 export function PostCard({ post }: { post: Post }) {
   return (
     <article className="glass group relative flex h-full flex-col overflow-hidden rounded-3xl transition-colors hover:border-primary/40">
       <div className="aspect-[16/9] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element -- supports admin-uploaded data URLs */}
-        <img
+        <SmartImage
           src={post.cover || '/placeholder.svg'}
           alt=""
-          loading="lazy"
-          className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="transition-transform duration-700 group-hover:scale-105"
         />
       </div>
       <div className="flex flex-1 flex-col p-6">

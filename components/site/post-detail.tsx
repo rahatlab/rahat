@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate, readingTime } from '@/lib/store'
 import { Markdown } from './markdown'
+import { SmartImage } from './smart-image'
 
 export function PostDetail({ post }: { post: Post }) {
   const { scrollYProgress } = useScroll()
@@ -32,7 +33,16 @@ export function PostDetail({ post }: { post: Post }) {
             </ul>
           </motion.header>
           {post.cover && (
-            <img src={post.cover} alt="" className="mt-10 aspect-[16/9] w-full rounded-3xl border border-glass-border object-cover" />
+            <SmartImage
+              src={post.cover}
+              alt=""
+              fill={false}
+              width={1600}
+              height={900}
+              sizes="(max-width: 768px) 100vw, 768px"
+              priority
+              className="mt-10 aspect-[16/9] w-full rounded-3xl border border-glass-border object-cover"
+            />
           )}
           <div className="mt-10">
             <Markdown content={post.content} />

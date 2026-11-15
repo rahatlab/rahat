@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     // Frontend upload formData includes: api_key, folder, timestamp, signature, file
     // So we must sign: api_key, folder, timestamp (alphabetically: api_key, folder, timestamp)
     // Note: resource_type is NOT sent in the upload formData, so it should NOT be in the signature.
-    const paramsToSign = {
+    const paramsToSign: Record<string, string | number> = {
       api_key: process.env.CLOUDINARY_API_KEY!,
       folder,
       timestamp,

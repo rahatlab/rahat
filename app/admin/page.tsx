@@ -54,10 +54,10 @@ export default function AdminOverview() {
         {messages.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">No messages yet.</p>
         ) : (
-          <div className="mt-3 overflow-x-auto">
-            <ul className="divide-y divide-glass-border min-w-[400px]">
+          <div className="mt-3">
+            <ul className="divide-y divide-glass-border">
               {messages.slice(0, 4).map((m) => (
-                <li key={m.id} className="flex items-center justify-between gap-3 py-3 text-sm min-w-[400px]">
+                <li key={m.id} className="flex flex-col gap-1 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-medium">{m.subject}</span>
                     <span className="block truncate text-muted-foreground">{m.name} · {m.email}</span>

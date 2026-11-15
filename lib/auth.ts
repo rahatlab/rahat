@@ -22,23 +22,46 @@ export const auth = betterAuth({
       const resetUrl = `${siteUrl}/admin/reset-password?token=${encodeURIComponent(token)}`;
       console.log(`[auth] sending reset email to ${user.email} ...`);
       const { data, error } = await resend.emails.send({
-        from: process.env.EMAIL_FROM || "Portfolio <onboarding@resend.dev>",
+        from: process.env.EMAIL_FROM || "Rahat <onboarding@resend.dev>",
         to: user.email,
-        subject: "Reset your portfolio admin password",
+        subject: "Reset your password · Rahat",
         html: `
-          <div style="font-family:ui-sans-serif,system-ui,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#09090b">
-            <h1 style="font-size:20px;margin:0 0 12px">Hi ${user.name || "there"} 👋</h1>
-            <p style="font-size:15px;line-height:1.6;margin:0 0 20px">
-              Someone (hopefully you) requested a password reset for your portfolio admin account.
-              This link expires in 1 hour.
-            </p>
-            <a href="${resetUrl}"
-               style="display:inline-block;background:#06b6d4;color:#04222a;font-weight:600;font-size:14px;padding:12px 20px;border-radius:999px;text-decoration:none">
-               Reset password
-            </a>
-            <p style="font-size:13px;color:#71717a;margin:20px 0 0">
-              If the button doesn't work, copy this link:<br/>
-              <span style="word-break:break-all">${resetUrl}</span>
+          <div style="font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#18181b;background:#ffffff">
+            <!-- Header -->
+            <div style="text-align:center;margin-bottom:32px">
+              <img src="${siteUrl}/logo-dark.png" alt="Rahat" width="56" height="54" style="border-radius:12px;display:block;margin:0 auto 12px" />
+              <span style="font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#71717a;font-weight:600">Rahat · Admin Console</span>
+            </div>
+
+            <!-- Body -->
+            <div style="border:1px solid #e4e4e7;border-radius:16px;padding:32px 28px;background:#fafafa">
+              <h1 style="font-size:22px;font-weight:700;margin:0 0 12px;color:#18181b">Reset your password</h1>
+              <p style="font-size:15px;line-height:1.7;color:#3f3f46;margin:0 0 8px">
+                Hi ${user.name || "there"},
+              </p>
+              <p style="font-size:15px;line-height:1.7;color:#3f3f46;margin:0 0 24px">
+                We received a request to reset the password for your admin account.
+                Click the button below to choose a new password. This link expires in
+                <strong style="color:#18181b">1 hour</strong>.
+              </p>
+              <div style="text-align:center;margin:0 0 24px">
+                <a href="${resetUrl}"
+                   style="display:inline-block;background:#06b6d4;color:#ffffff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:999px;text-decoration:none">
+                   Reset password
+                </a>
+              </div>
+              <p style="font-size:13px;color:#71717a;line-height:1.6;margin:0;padding-top:16px;border-top:1px solid #e4e4e7">
+                If the button doesn't work, copy and paste this link into your browser:
+                <br />
+                <a href="${resetUrl}" style="color:#0891b2;word-break:break-all">${resetUrl}</a>
+              </p>
+            </div>
+
+            <!-- Footer -->
+            <p style="text-align:center;font-size:12px;color:#a1a1aa;margin:24px 0 0">
+              © ${new Date().getFullYear()} Rahat · Full-Stack Developer Portfolio
+              <br />
+              This is an automated email — please don't reply.
             </p>
           </div>
         `,

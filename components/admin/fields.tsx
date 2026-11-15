@@ -157,9 +157,9 @@ export function Panel({ title, description, children, actions }: { title: string
 }
 
 export const primaryBtn =
-  'inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer'
+  'inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer'
 export const ghostBtn =
-  'inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-glass-border px-4 text-sm font-medium transition-colors hover:bg-foreground/5 cursor-pointer'
+  'inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-glass-border px-4 text-sm font-medium transition-colors hover:bg-foreground/5 cursor-pointer'
 
 /** Reusable save button with loading state and toast */
 export function SaveButton({
@@ -168,15 +168,16 @@ export function SaveButton({
   onSuccessMessage = 'Saved',
   onErrorMessage = 'Failed to save',
   className,
+  onClick,
   ...props
 }: {
   loading?: boolean
-  children: React.ReactNode
+  children: ReactNode
   onSuccessMessage?: string
   onErrorMessage?: string
   className?: string
   onClick?: () => Promise<void> | void
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -184,10 +185,10 @@ export function SaveButton({
     if (isLoading) return
     setIsLoading(true)
     try {
-      await props.onClick?.()
+      await onClick?.()
       toast.success(onSuccessMessage)
     } catch (err) {
-      toast.error(onErrorMessage)
+      toast.error(err instanceof Error && err.message ? err.message : onErrorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -217,9 +218,9 @@ export function SaveButton({
 }
 
 /** Skeleton loader for page transitions */
-export function Skeleton({ className }: { className?: string }) {
+export function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={cn('animate-pulse bg-muted rounded-xl', className)} />
+    <div className={cn('animate-pulse bg-muted rounded-xl', className)} style={style} />
   )
 }
 
