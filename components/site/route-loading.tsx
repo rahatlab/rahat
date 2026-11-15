@@ -12,7 +12,7 @@ function Skel({ className, style }: { className?: string; style?: CSSProperties 
 /** Monospace terminal line: > render("/blog") … ▍ */
 export function TerminalLine({ path }: { path: string }) {
   return (
-    <p className="font-mono text-xs text-muted-foreground" aria-hidden>
+    <p className="font-mono text-sm text-muted-foreground  flex h-screen items-center justify-center" aria-hidden>
       <span className="text-primary">&gt;</span> render(<span className="text-accent">&quot;{path}&quot;</span>) …{' '}
       <span className="ml-0.5 inline-block h-3 w-1.5 animate-blink bg-primary align-middle" />
     </p>
