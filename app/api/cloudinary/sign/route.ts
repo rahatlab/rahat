@@ -1,12 +1,5 @@
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+import crypto from "crypto";
 
 export const runtime = "nodejs";
 
@@ -34,15 +27,17 @@ export async function POST(req: Request) {
       timestamp,
     };
 
+    // Manually create signature to match Cloudinary's exact expectations:
+    // 1. Sort parameters alphabetically by key
+    // 2. Create string: key1=value1&key2=value2...
+    // 3. Append API secret
+    // 4. Create SHA1 hash (hex)
+    const sortedKeys = Object.keys(paramsToSign).sort();
+    const stringToSign = sortedKeys.map(k => `${k}=${paramsToSign[k]}`).join('&') + process.env.CLOUDINARY_API_SECRET!;
+    const signature = crypto.createHash('sha1').update(stringToSign).digest('hex');
+
     // Debug: log what we're signing
-    console.log("[cloudinary/sign] paramsToSign:", JSON.stringify(paramsToSign));
-    console.log("[cloudinary/sign] api_secret length:", process.env.CLOUDINARY_API_SECRET?.length);
-
-    const signature = cloudinary.utils.api_sign_request(
-      paramsToSign,
-      process.env.CLOUDINARY_API_SECRET!,
-    );
-
+    console.log("[cloudinary/sign] stringToSign:", stringToSign);
     console.log("[cloudinary/sign] generated signature:", signature);
 
     return NextResponse.json({
@@ -52,7 +47,7 @@ export async function POST(req: Request) {
       cloudName: process.env.CLOUDINARY_CLOUD_NAME,
       folder,
       resource_type,
-      uploadUrl: `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/${resource_type}/upload`,
+      uploadUrl: `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
     });
   } catch (e) {
     console.error("[cloudinary/sign] error:", e);
