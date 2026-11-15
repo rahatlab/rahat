@@ -19,11 +19,11 @@ export default function AdminOverview() {
         <p className="text-muted-foreground">Manage everything on your portfolio from here.</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((s) => (
-          <Link key={s.label} href={s.href} className="glass rounded-2xl p-5 transition-colors hover:border-primary/40">
+          <Link key={s.label} href={s.href} className="glass rounded-2xl p-5 transition-colors hover:border-primary/40 min-w-0">
             <s.icon className="size-5 text-primary" aria-hidden />
-            <p className="mt-4 font-heading text-3xl font-bold">{s.value}</p>
+            <p className="mt-4 font-heading text-3xl font-bold truncate">{s.value}</p>
             <p className="text-sm text-muted-foreground">{s.label}</p>
           </Link>
         ))}
@@ -40,12 +40,12 @@ export default function AdminOverview() {
         <Link href="/admin/settings" className="text-sm text-primary underline underline-offset-4">Change</Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Link href="/admin/projects?new=1" className="glass flex items-center gap-3 rounded-2xl p-5 hover:border-primary/40">
-          <Plus className="size-5 text-primary" aria-hidden /> <span className="font-medium">Add a new project</span>
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+        <Link href="/admin/projects?new=1" className="glass flex items-center gap-3 rounded-2xl p-5 hover:border-primary/40 min-w-0">
+          <Plus className="size-5 text-primary" aria-hidden /> <span className="font-medium truncate">Add a new project</span>
         </Link>
-        <Link href="/admin/blog?new=1" className="glass flex items-center gap-3 rounded-2xl p-5 hover:border-primary/40">
-          <Plus className="size-5 text-accent" aria-hidden /> <span className="font-medium">Write a blog post</span>
+        <Link href="/admin/blog?new=1" className="glass flex items-center gap-3 rounded-2xl p-5 hover:border-primary/40 min-w-0">
+          <Plus className="size-5 text-accent" aria-hidden /> <span className="font-medium truncate">Write a blog post</span>
         </Link>
       </div>
 
@@ -54,17 +54,19 @@ export default function AdminOverview() {
         {messages.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">No messages yet.</p>
         ) : (
-          <ul className="mt-3 divide-y divide-glass-border">
-            {messages.slice(0, 4).map((m) => (
-              <li key={m.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-                <span className="min-w-0">
-                  <span className="block truncate font-medium">{m.subject}</span>
-                  <span className="block truncate text-muted-foreground">{m.name} · {m.email}</span>
-                </span>
-                <span className="shrink-0 font-mono text-xs text-muted-foreground">{formatDate(m.createdAt)}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-3 overflow-x-auto">
+            <ul className="divide-y divide-glass-border min-w-[400px]">
+              {messages.slice(0, 4).map((m) => (
+                <li key={m.id} className="flex items-center justify-between gap-3 py-3 text-sm min-w-[400px]">
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-medium">{m.subject}</span>
+                    <span className="block truncate text-muted-foreground">{m.name} · {m.email}</span>
+                  </span>
+                  <span className="shrink-0 font-mono text-xs text-muted-foreground whitespace-nowrap">{formatDate(m.createdAt)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </section>
     </div>
