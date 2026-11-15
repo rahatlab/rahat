@@ -23,14 +23,14 @@ export async function POST(req: Request) {
 
     const timestamp = Math.round(new Date().getTime() / 1000);
 
-    // Cloudinary requires ALL parameters (except file and signature) to be included
-    // in the signature, sorted alphabetically by key.
-    // Frontend sends: api_key, folder, resource_type, timestamp, signature, file
-    // So we must sign: api_key, folder, resource_type, timestamp (alphabetically)
+    // Cloudinary requires ALL parameters sent in the upload (except file and signature)
+    // to be included in the signature, sorted alphabetically by key.
+    // Frontend upload formData includes: api_key, folder, timestamp, signature, file
+    // So we must sign: api_key, folder, timestamp (alphabetically: api_key, folder, timestamp)
+    // Note: resource_type is NOT sent in the upload formData, so it should NOT be in the signature.
     const paramsToSign = {
       api_key: process.env.CLOUDINARY_API_KEY!,
       folder,
-      resource_type,
       timestamp,
     };
 
