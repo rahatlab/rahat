@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { fileToDataUrl } from '@/lib/store'
 import type { SiteSettings } from '@/lib/types'
 import { apiGetSettings, apiUpdateSettings } from '@/lib/api'
-import { ghostBtn, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
+import { CardSkeleton, ghostBtn, Panel, primaryBtn, SaveButton, Skeleton, TagInput, TextArea, TextInput, Toggle } from './fields'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 export function SettingsForm() {
@@ -69,19 +69,21 @@ export function SettingsForm() {
       </div>
 
       <Panel title="Availability" description="Shown as a live badge in the hero.">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between gap-4">
           <Toggle label="Available for freelance" checked={s.available} onChange={(v) => set('available', v)} />
-          <TextInput label="Badge text" value={s.availabilityText} onChange={(e) => set('availabilityText', e.target.value)} disabled={!s.available} />
+          <div className="flex-1 min-w-0">
+            <TextInput label="Badge text" value={s.availabilityText} onChange={(e) => set('availabilityText', e.target.value)} disabled={!s.available} />
+          </div>
         </div>
       </Panel>
 
       <Panel title="Hero" description="Your introduction on the homepage.">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
           <TextInput label="Name" value={s.name} onChange={(e) => set('name', e.target.value)} />
           <TextInput label="Initials" maxLength={3} value={s.initials} onChange={(e) => set('initials', e.target.value.toUpperCase())} />
-          <TextInput className="md:col-span-2" label="Headline" hint="The last two words get the gradient highlight." value={s.headline} onChange={(e) => set('headline', e.target.value)} />
-          <TextArea className="md:col-span-2" label="Bio" rows={4} value={s.bio} onChange={(e) => set('bio', e.target.value)} />
-          <div className="md:col-span-2">
+          <TextInput className="col-span-1 sm:col-span-2" label="Headline" hint="The last two words get the gradient highlight." value={s.headline} onChange={(e) => set('headline', e.target.value)} />
+          <TextArea className="col-span-1 sm:col-span-2" label="Bio" rows={4} value={s.bio} onChange={(e) => set('bio', e.target.value)} />
+          <div className="col-span-1 sm:col-span-2">
             <TagInput label="Typewriter roles" value={s.roles} onChange={(v) => set('roles', v)} placeholder="Full-Stack Developer" />
           </div>
           <TextInput label="Location" value={s.location} onChange={(e) => set('location', e.target.value)} />
@@ -90,7 +92,7 @@ export function SettingsForm() {
       </Panel>
 
       <Panel title="CV / Résumé" description="The file visitors get from the Download CV button.">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2">
           <TextInput label="CV file URL" value={s.cvUrl.startsWith('data:') ? '' : s.cvUrl} placeholder={s.cvUrl.startsWith('data:') ? 'Uploaded file in use' : 'https://…/cv.pdf'} onChange={(e) => set('cvUrl', e.target.value)} />
           <TextInput label="Download file name" value={s.cvFileName} onChange={(e) => set('cvFileName', e.target.value)} />
         </div>
@@ -117,7 +119,7 @@ export function SettingsForm() {
       </Panel>
 
       <Panel title="Social links">
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <TextInput label="GitHub" type="url" value={s.socials.github} onChange={(e) => setSocial('github', e.target.value)} />
           <TextInput label="LinkedIn" type="url" value={s.socials.linkedin} onChange={(e) => setSocial('linkedin', e.target.value)} />
           <TextInput label="Twitter / X" type="url" value={s.socials.twitter} onChange={(e) => setSocial('twitter', e.target.value)} />
