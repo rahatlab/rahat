@@ -2,15 +2,57 @@
 
 import { FileText, FolderKanban, Mail, Plus, Radio } from 'lucide-react'
 import Link from 'next/link'
-import { formatDate, useSiteData } from '@/lib/store'
+import { useEffect, useState } from 'react'
+import { apiGetMessages, apiGetPosts, apiGetProjects, apiGetSettings } from '@/lib/api'
+import { CardSkeleton, Skeleton } from '@/components/admin/fields'
+import { formatDate } from '@/lib/store'
+import type { ContactMessage, Post, Project, SiteSettings } from '@/lib/types'
 
 export default function AdminOverview() {
-  const { projects, posts, messages, settings } = useSiteData()
+  const [projects, setProjects] = useState<Project[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
+  const [messages, setMessages] = useState<ContactMessage[]>([])
+  const [settings, setSettings] = useState<SiteSettings | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+    Promise.all([apiGetProjects(), apiGetPosts(), apiGetMessages(), apiGetSettings()])
+      .then(([p, b, m, s]) => {
+        if (!mounted) return
+        setProjects(p)
+        setPosts(b)
+        setMessages(m)
+        setSettings(s)
+      })
+      .catch((err) => console.error(err))
+      .finally(() => { if (mounted) setLoading(false) })
+    return () => { mounted = false }
+  }, [])
+
   const stats = [
     { label: 'Projects', value: projects.length, icon: FolderKanban, href: '/admin/projects' },
     { label: 'Published posts', value: posts.filter((p) => p.published).length, icon: FileText, href: '/admin/blog' },
     { label: 'Unread messages', value: messages.filter((m) => !m.read).length, icon: Mail, href: '/admin/messages' },
   ]
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-6" aria-busy="true" aria-label="Loading dashboard">
+        <div>
+          <Skeleton className="h-9 w-56" />
+          <Skeleton className="mt-2 h-4 w-72" />
+        </div>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+        <Skeleton className="h-24 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-2xl" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -31,9 +73,9 @@ export default function AdminOverview() {
 
       <div className="glass flex flex-wrap items-center justify-between gap-4 rounded-2xl p-5">
         <div className="flex items-center gap-3">
-          <Radio className={`size-5 ${settings.available ? 'text-emerald-500' : 'text-muted-foreground'}`} aria-hidden />
+          <Radio className={`size-5 ${settings?.available ? 'text-emerald-500' : 'text-muted-foreground'}`} aria-hidden />
           <div>
-            <p className="font-medium">{settings.available ? settings.availabilityText : 'Not available'}</p>
+            <p className="font-medium">{settings?.available ? settings.availabilityText : 'Not available'}</p>
             <p className="text-sm text-muted-foreground">Current availability status shown on the site</p>
           </div>
         </div>
